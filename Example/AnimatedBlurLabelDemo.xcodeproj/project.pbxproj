@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		BF1B014F1BBEB8AB0027CABD /* AnimatedBlurLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1B014E1BBEB8AB0027CABD /* AnimatedBlurLabel.swift */; };
 		BF55093A1BBC70E6004ADB98 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5509391BBC70E6004ADB98 /* AppDelegate.swift */; };
 		BF55093C1BBC70E6004ADB98 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF55093B1BBC70E6004ADB98 /* ViewController.swift */; };
 		BF55093F1BBC70E6004ADB98 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BF55093D1BBC70E6004ADB98 /* Main.storyboard */; };
@@ -15,6 +16,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		BF1B014E1BBEB8AB0027CABD /* AnimatedBlurLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnimatedBlurLabel.swift; sourceTree = "<group>"; };
 		BF5509361BBC70E6004ADB98 /* AnimatedBlurLabelDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AnimatedBlurLabelDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BF5509391BBC70E6004ADB98 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BF55093B1BBC70E6004ADB98 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -35,6 +37,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		BF1B014D1BBEB8AB0027CABD /* AnimatedBlurLabel */ = {
+			isa = PBXGroup;
+			children = (
+				BF1B014E1BBEB8AB0027CABD /* AnimatedBlurLabel.swift */,
+			);
+			name = AnimatedBlurLabel;
+			path = ../../AnimatedBlurLabel;
+			sourceTree = "<group>";
+		};
 		BF55092D1BBC70E6004ADB98 = {
 			isa = PBXGroup;
 			children = (
@@ -54,6 +65,7 @@
 		BF5509381BBC70E6004ADB98 /* AnimatedBlurLabelDemo */ = {
 			isa = PBXGroup;
 			children = (
+				BF1B014D1BBEB8AB0027CABD /* AnimatedBlurLabel */,
 				BF5509391BBC70E6004ADB98 /* AppDelegate.swift */,
 				BF55093B1BBC70E6004ADB98 /* ViewController.swift */,
 				BF55093D1BBC70E6004ADB98 /* Main.storyboard */,
@@ -135,6 +147,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BF55093C1BBC70E6004ADB98 /* ViewController.swift in Sources */,
+				BF1B014F1BBEB8AB0027CABD /* AnimatedBlurLabel.swift in Sources */,
 				BF55093A1BBC70E6004ADB98 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -247,6 +260,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = AnimatedBlurLabelDemo/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = de.mathiaskoehnke.AnimatedBlurLabelDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -258,6 +272,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = AnimatedBlurLabelDemo/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = de.mathiaskoehnke.AnimatedBlurLabelDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -283,6 +298,7 @@
 				BF55094A1BBC70E6004ADB98 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
