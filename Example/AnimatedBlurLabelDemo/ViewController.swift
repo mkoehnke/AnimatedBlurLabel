@@ -16,17 +16,15 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        let paragraph = NSMutableParagraphStyle()
-        paragraph.lineBreakMode = NSLineBreakMode.ByWordWrapping
-        paragraph.alignment = .Center // potentially this can be an input param too, but i guess in most use cases we want center align
-        
-        blurLabel.attributedText = NSAttributedString(string: "This is a test", attributes: [NSParagraphStyleAttributeName : paragraph, NSFontAttributeName : UIFont.systemFontOfSize(32.0)])
+        blurLabel.font = UIFont.systemFontOfSize(32, weight: UIFontWeightBold)
+        blurLabel.text = "This is a test"
     }
 
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
-        blurLabel.setBlurred(false, animated: false) { finished in
+        blurLabel.setBlurred(true, animated: true) { finished in
             print("Finished!!!!")
+            self.blurLabel.setBlurred(false, animated: true, completion: nil)
         }
     }
     

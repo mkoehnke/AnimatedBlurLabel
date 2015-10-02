@@ -11,7 +11,7 @@ import UIKit
 
 class AnimatedBlurLabel : UILabel {
     
-    var animationDuration : NSTimeInterval = 5.0
+    var animationDuration : NSTimeInterval = 10.0
     var blurRadius : CGFloat = 30.0
     
     func setBlurred(blurred: Bool, animated: Bool, completion: ((finished : Bool) -> Void)?) {
@@ -23,10 +23,11 @@ class AnimatedBlurLabel : UILabel {
         if canRun() {
             print("Start blurring ...")
             if animated {
-                if reverse == blurred { blurredImages = blurredImages.reverse() }
                 setBlurred(!blurred)
+                if reverse == blurred { blurredImages = blurredImages.reverse() }
                 completionParameter = completion
                 reverse = !blurred
+                progress = 0.0
                 startDisplayLink()
             } else {
                 setBlurred(blurred)
@@ -94,15 +95,28 @@ class AnimatedBlurLabel : UILabel {
     override var attributedText: NSAttributedString? {
         set(attributedText) {
             if let attributedText = attributedText where attributedText.length > 0 {
-                let image = attributedText.imageFromText(font, maxSize: bounds.size, color: textColor)
-                prepareImages(image)
                 super.attributedText = attributedText
+                updateAttributesFromString()
+                prepareImages()
             } else {
                 super.attributedText = nil
             }
         }
         get {
             return super.attributedText
+        }
+    }
+    
+    override var text: String? {
+        set(text) {
+            if let text = text {
+                self.attributedText = NSAttributedString(string: text, attributes: defaultAttributes())
+            } else {
+                self.attributedText = nil
+            }
+        }
+        get {
+            return self.attributedText?.string
         }
     }
     
@@ -121,11 +135,11 @@ class AnimatedBlurLabel : UILabel {
         if blurred {
             textColor = .clearColor()
             blurLayer1.contents = blurredImages[Int(blurredImages.count-1)].CGImage
-            blurLayer2.contents = nil
+            blurLayer2.contents = blurredImages[Int(blurredImages.count-1)].CGImage
         } else {
-            textColor = originalTextColor
             blurLayer1.contents = nil
             blurLayer2.contents = nil
+            textColor = originalTextColor
         }
     }
     
@@ -157,7 +171,6 @@ class AnimatedBlurLabel : UILabel {
     
     private func startDisplayLink() {
         if (progress < animationDuration && displayLink?.paused == true) {
-            progress = 0.0
             startTime = CACurrentMediaTime();
             displayLink?.paused = false
         }
@@ -168,7 +181,7 @@ class AnimatedBlurLabel : UILabel {
     }
     
     @objc private func animateProgress(displayLink : CADisplayLink) {
-        if (progress >= animationDuration) {
+        if (progress > animationDuration) {
             stopDisplayLink()
             setBlurred(!reverse)
             callCompletion(completionParameter, finished: true)
@@ -193,6 +206,8 @@ class AnimatedBlurLabel : UILabel {
         blurLayer2.contents = blurredImages[blurIndex + 1].CGImage
         blurLayer2.opacity = Float(blurRemainder)
         CATransaction.setDisableActions(false)
+        
+        print("remainder: \(blurRemainder) - blurIndex: \(blurIndex + 1) - count: \(blurredImages.count)")
     }
     
     override func awakeFromNib() {
@@ -202,34 +217,69 @@ class AnimatedBlurLabel : UILabel {
         layer.addSublayer(blurLayer2)
         
         self.textColor = originalTextColor
-        self.font = UIFont.systemFontOfSize(32.0)
     }
     
-    private func prepareImages(image: UIImage) {
-        blurredImagesReady = false
-        imageToBlur = CIImage(image: image)
-        blurredImages.append(image)
-        
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) { [weak self] in
-            if let strongSelf = self {
-                for i in 1...strongSelf.numberOfStages {
-                    let radius = Double(i) * Double(strongSelf.blurRadius) / Double(strongSelf.numberOfStages)
-                    let blurredImage = strongSelf.applyBlurEffect(image, blurLevel: Double(radius))
-                    strongSelf.blurredImages.append(blurredImage)
-                    
-                    if i == strongSelf.numberOfStages {
+    private func prepareImages() {
+        if let attributedText = attributedText {
+            blurredImagesReady = false
+            let image = attributedText.imageFromText(bounds.size)
+            imageToBlur = CIImage(image: image)
+            blurredImages.append(image)
+            blurredImages.append(image)
+            
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) { [weak self] in
+                if let strongSelf = self {
+                    for i in 1...strongSelf.numberOfStages {
+                        let radius = Double(i) * Double(strongSelf.blurRadius) / Double(strongSelf.numberOfStages)
+                        let blurredImage = strongSelf.applyBlurEffect(image, blurLevel: Double(radius))
                         strongSelf.blurredImages.append(blurredImage)
+                        
+//                        if i == strongSelf.numberOfStages {
+//                            strongSelf.blurredImages.append(blurredImage)
+//                        }
+                    }
+                    strongSelf.blurredImagesReady = true
+                    
+                    if let blurredParameter = strongSelf.blurredParameter,
+                        animatedParameter = strongSelf.animatedParameter,
+                        completionParameter = strongSelf.completionParameter {
+                            dispatch_async(dispatch_get_main_queue(), { [weak self] in
+                                self?.setBlurred(blurredParameter, animated: animatedParameter, completion: completionParameter)
+                            })
                     }
                 }
-                strongSelf.blurredImagesReady = true
-                
-                if let blurredParameter = strongSelf.blurredParameter,
-                    animatedParameter = strongSelf.animatedParameter,
-                    completionParameter = strongSelf.completionParameter {
-                    dispatch_async(dispatch_get_main_queue(), { [weak self] in
-                        self?.setBlurred(blurredParameter, animated: animatedParameter, completion: completionParameter)
-                    })
+            }
+        }
+    }
+    
+    private func defaultAttributes() -> [String : AnyObject]? {
+        let paragraph = NSMutableParagraphStyle()
+        paragraph.lineBreakMode = lineBreakMode
+        paragraph.alignment = textAlignment
+        return [NSParagraphStyleAttributeName : paragraph, NSFontAttributeName : font, NSForegroundColorAttributeName : textColor]
+    }
+    
+    private func updateAttributesFromString() {
+        if let string = attributedText {
+            string.enumerateAttribute(NSFontAttributeName, inRange: NSMakeRange(0, string.length), options: []) { [weak self] value, range, stop in
+                self?.font = value as? UIFont
+                stop.memory = true
+            }
+            
+            string.enumerateAttribute(NSForegroundColorAttributeName, inRange: NSMakeRange(0, string.length), options: []) { [weak self] value, range, stop in
+                self?.textColor = value as? UIColor
+                stop.memory = true
+            }
+            
+            string.enumerateAttribute(NSParagraphStyleAttributeName, inRange: NSMakeRange(0, string.length), options: []) { [weak self] value, range, stop in
+                let paragraphStyle = value as? NSParagraphStyle
+                if let alignment = paragraphStyle?.alignment {
+                    self?.textAlignment = alignment
                 }
+                if let lineBreakMode = paragraphStyle?.lineBreakMode {
+                    self?.lineBreakMode = lineBreakMode
+                }
+                stop.memory = true
             }
         }
     }
@@ -270,7 +320,7 @@ private extension NSAttributedString {
         return size
     }
     
-    private func imageFromText(font:UIFont, maxSize: CGSize, color:UIColor) -> UIImage {
+    private func imageFromText(maxSize: CGSize) -> UIImage {
         let size = sizeOfAttributeString(self, maxSize:maxSize)
         UIGraphicsBeginImageContextWithOptions(size, false , 0.0)
         self.drawInRect(CGRectMake(0, 0, size.width, size.height))
