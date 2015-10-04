@@ -16,10 +16,10 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Nrj-rR-itJ" customClass="AnimatedBlurLabel" customModule="AnimatedBlurLabelDemo" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Demo" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Nrj-rR-itJ" customClass="AnimatedBlurLabel" customModule="AnimatedBlurLabelDemo" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="271" width="600" height="58"/>
                                 <animations/>
-                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="32"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="48"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
@@ -27,14 +27,14 @@
                         <animations/>
                         <color key="backgroundColor" red="0.20392156862745098" green="0.59607843137254901" blue="0.85882352941176465" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
-                            <constraint firstItem="Nrj-rR-itJ" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="70Q-Iv-3zD"/>
-                            <constraint firstAttribute="trailing" secondItem="Nrj-rR-itJ" secondAttribute="trailing" id="8vB-VM-dOY"/>
-                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="Nrj-rR-itJ" secondAttribute="bottom" id="Iam-0Q-4m4"/>
-                            <constraint firstItem="Nrj-rR-itJ" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="VQJ-cJ-DTM"/>
+                            <constraint firstItem="Nrj-rR-itJ" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="7SO-xA-ZWY"/>
+                            <constraint firstItem="Nrj-rR-itJ" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="Beg-my-Ynp"/>
+                            <constraint firstAttribute="trailing" secondItem="Nrj-rR-itJ" secondAttribute="trailing" id="Dtq-O3-seq"/>
+                            <constraint firstItem="Nrj-rR-itJ" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="qFu-Em-cME"/>
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="blurLabel" destination="Nrj-rR-itJ" id="lMo-wU-LFd"/>
+                        <outlet property="blurLabel" destination="Nrj-rR-itJ" id="2dd-J0-JNr"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
