@@ -15,8 +15,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        
-        blurLabel.font = UIFont.systemFontOfSize(32, weight: UIFontWeightBold)
+        blurLabel.font = UIFont.boldSystemFontOfSize(48.0)
         blurLabel.text = "This is a test"
     }
 
@@ -24,6 +23,7 @@ class ViewController: UIViewController {
         super.viewDidAppear(animated)
         blurLabel.setBlurred(true, animated: true) { finished in
             print("Finished!!!!")
+            self.blurLabel.font = UIFont.boldSystemFontOfSize(24.0)
             self.blurLabel.setBlurred(false, animated: true, completion: nil)
         }
     }

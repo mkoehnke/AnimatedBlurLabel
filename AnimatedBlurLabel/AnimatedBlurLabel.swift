@@ -17,6 +17,7 @@ class AnimatedBlurLabel : UILabel {
     func setBlurred(blurred: Bool, animated: Bool, completion: ((finished : Bool) -> Void)?) {
         if blurredImagesReady == false {
             deferBlur(blurred, animated: animated, completion: completion)
+            prepareImages()
             return
         }
         
@@ -80,15 +81,14 @@ class AnimatedBlurLabel : UILabel {
     
     private var startTime : CFTimeInterval?
     private var progress : NSTimeInterval = 0.0
-    private lazy var originalTextColor : UIColor? = {
+    private lazy var originalTextColor : UIColor = {
        return self.textColor ?? .blackColor()
     }()
     
     override var textColor: UIColor! {
         didSet {
-            if textColor != .clearColor() {
-                self.originalTextColor = textColor
-            }
+            self.originalTextColor = textColor
+            applyAttributesFromAttributedString()
         }
     }
     
@@ -96,8 +96,7 @@ class AnimatedBlurLabel : UILabel {
         set(attributedText) {
             if let attributedText = attributedText where attributedText.length > 0 {
                 super.attributedText = attributedText
-                updateAttributesFromString()
-                prepareImages()
+                applyAttributesFromAttributedString()
             } else {
                 super.attributedText = nil
             }
@@ -120,6 +119,27 @@ class AnimatedBlurLabel : UILabel {
         }
     }
     
+    override var textAlignment : NSTextAlignment {
+        set(alignment) {
+            super.textAlignment = .Center
+        }
+        get {
+            return super.textAlignment
+        }
+    }
+    
+    override var font : UIFont! {
+        didSet {
+            applyAttributesFromAttributedString()
+        }
+    }
+    
+    override var lineBreakMode : NSLineBreakMode {
+        didSet {
+            applyAttributesFromAttributedString()
+        }
+    }
+    
     private func deferBlur(blurred: Bool, animated: Bool, completion: ((finished : Bool) -> Void)?) {
         print("Defer blurring ...")
         blurredParameter = blurred
@@ -133,24 +153,24 @@ class AnimatedBlurLabel : UILabel {
     
     private func setBlurred(blurred: Bool) {
         if blurred {
-            textColor = .clearColor()
+            super.textColor = .clearColor()
             blurLayer1.contents = blurredImages[Int(blurredImages.count-1)].CGImage
             blurLayer2.contents = blurredImages[Int(blurredImages.count-1)].CGImage
         } else {
+            super.textColor = originalTextColor
             blurLayer1.contents = nil
             blurLayer2.contents = nil
-            textColor = originalTextColor
         }
     }
     
     private func callCompletion(completion: ((finished: Bool) -> Void)?, finished: Bool) {
-        if let completion = completion {
-            completion(finished: finished)
-        }
-        self.completionParameter = nil
+        print("Finished blurring: \(finished)")
         self.blurredParameter = nil
         self.animatedParameter = nil
-        print("Finished blurring: \(finished)")
+        if let completion = completion {
+            self.completionParameter = nil
+            completion(finished: finished)
+        }
     }
     
     private func setupBlurLayer() -> CALayer {
@@ -202,12 +222,10 @@ class AnimatedBlurLabel : UILabel {
         let blurRemainder = blur - Double(blurIndex)
 
         CATransaction.setDisableActions(true)
-        blurLayer1.contents = blurredImages[blurIndex].CGImage
-        blurLayer2.contents = blurredImages[blurIndex + 1].CGImage
+        blurLayer1.contents = blurredImages[blurIndex + 1].CGImage
+        blurLayer2.contents = blurredImages[blurIndex + 2].CGImage
         blurLayer2.opacity = Float(blurRemainder)
         CATransaction.setDisableActions(false)
-        
-        print("remainder: \(blurRemainder) - blurIndex: \(blurIndex + 1) - count: \(blurredImages.count)")
     }
     
     override func awakeFromNib() {
@@ -216,16 +234,21 @@ class AnimatedBlurLabel : UILabel {
         layer.addSublayer(blurLayer1)
         layer.addSublayer(blurLayer2)
         
-        self.textColor = originalTextColor
+        super.textColor = originalTextColor
+        super.textAlignment = .Center
     }
     
     private func prepareImages() {
         if let attributedText = attributedText {
             blurredImagesReady = false
-            let image = attributedText.imageFromText(bounds.size)
+            blurredImages = [UIImage]()
+            
+            let image = NSAttributedString(string: attributedText.string, attributes: defaultAttributes()).imageFromText(bounds.size)
+            let blurredImage = applyBlurEffect(image, blurLevel: 0)
+            
             imageToBlur = CIImage(image: image)
-            blurredImages.append(image)
-            blurredImages.append(image)
+            blurredImages.append(blurredImage)
+            blurredImages.append(blurredImage)
             
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) { [weak self] in
                 if let strongSelf = self {
@@ -234,17 +257,16 @@ class AnimatedBlurLabel : UILabel {
                         let blurredImage = strongSelf.applyBlurEffect(image, blurLevel: Double(radius))
                         strongSelf.blurredImages.append(blurredImage)
                         
-//                        if i == strongSelf.numberOfStages {
-//                            strongSelf.blurredImages.append(blurredImage)
-//                        }
+                        if i == strongSelf.numberOfStages {
+                            strongSelf.blurredImages.append(blurredImage)
+                        }
                     }
                     strongSelf.blurredImagesReady = true
                     
                     if let blurredParameter = strongSelf.blurredParameter,
-                        animatedParameter = strongSelf.animatedParameter,
-                        completionParameter = strongSelf.completionParameter {
+                        animatedParameter = strongSelf.animatedParameter {
                             dispatch_async(dispatch_get_main_queue(), { [weak self] in
-                                self?.setBlurred(blurredParameter, animated: animatedParameter, completion: completionParameter)
+                                self?.setBlurred(blurredParameter, animated: animatedParameter, completion: self?.completionParameter)
                             })
                     }
                 }
@@ -256,31 +278,33 @@ class AnimatedBlurLabel : UILabel {
         let paragraph = NSMutableParagraphStyle()
         paragraph.lineBreakMode = lineBreakMode
         paragraph.alignment = textAlignment
-        return [NSParagraphStyleAttributeName : paragraph, NSFontAttributeName : font, NSForegroundColorAttributeName : textColor]
+        return [NSParagraphStyleAttributeName : paragraph, NSFontAttributeName : font, NSForegroundColorAttributeName : originalTextColor, NSKernAttributeName : 0.0]
     }
     
-    private func updateAttributesFromString() {
-        if let string = attributedText {
-            string.enumerateAttribute(NSFontAttributeName, inRange: NSMakeRange(0, string.length), options: []) { [weak self] value, range, stop in
-                self?.font = value as? UIFont
+    private func applyAttributesFromAttributedString() {
+        if let string = super.attributedText {
+            string.enumerateAttribute(NSFontAttributeName, inRange: NSMakeRange(0, string.length), options: []) { value, range, stop in
+                super.font = value as? UIFont
                 stop.memory = true
             }
             
-            string.enumerateAttribute(NSForegroundColorAttributeName, inRange: NSMakeRange(0, string.length), options: []) { [weak self] value, range, stop in
-                self?.textColor = value as? UIColor
+            string.enumerateAttribute(NSForegroundColorAttributeName, inRange: NSMakeRange(0, string.length), options: []) { value, range, stop in
+                super.textColor = value as? UIColor
                 stop.memory = true
             }
             
-            string.enumerateAttribute(NSParagraphStyleAttributeName, inRange: NSMakeRange(0, string.length), options: []) { [weak self] value, range, stop in
+            string.enumerateAttribute(NSParagraphStyleAttributeName, inRange: NSMakeRange(0, string.length), options: []) { value, range, stop in
                 let paragraphStyle = value as? NSParagraphStyle
                 if let alignment = paragraphStyle?.alignment {
-                    self?.textAlignment = alignment
+                    super.textAlignment = alignment
                 }
                 if let lineBreakMode = paragraphStyle?.lineBreakMode {
-                    self?.lineBreakMode = lineBreakMode
+                    super.lineBreakMode = lineBreakMode
                 }
                 stop.memory = true
             }
+            
+            blurredImagesReady = false
         }
     }
     
@@ -291,17 +315,24 @@ class AnimatedBlurLabel : UILabel {
     
     override func layoutSubviews() {
         super.layoutSubviews()
+        CATransaction.setDisableActions(true)
         blurLayer1.bounds = bounds
         blurLayer1.position = center
         blurLayer2.bounds = bounds
         blurLayer2.position = center
+        CATransaction.setDisableActions(false)
     }
 
     private func applyBlurEffect(image: UIImage, blurLevel: Double) -> UIImage {
-        blurfilter.setValue(blurLevel, forKey: kCIInputRadiusKey)
-        blurfilter.setValue(imageToBlur, forKey: kCIInputImageKey)
-        let resultImage = blurfilter.outputImage!
-        
+        let resultImage : CIImage!
+        if blurLevel > 0 {
+            blurfilter.setValue(blurLevel, forKey: kCIInputRadiusKey)
+            blurfilter.setValue(imageToBlur, forKey: kCIInputImageKey)
+            resultImage = blurfilter.outputImage!
+        } else {
+            resultImage = CIImage(image: image)
+        }
+
         blendFilter.setValue(resultImage, forKey: kCIInputImageKey)
         blendFilter.setValue(inputBackgroundImage, forKey: kCIInputBackgroundImageKey)
         let blendOutput = blendFilter.outputImage!
