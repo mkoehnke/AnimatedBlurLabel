@@ -30,7 +30,6 @@
                             <constraint firstItem="Nrj-rR-itJ" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="7SO-xA-ZWY"/>
                             <constraint firstItem="Nrj-rR-itJ" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="Beg-my-Ynp"/>
                             <constraint firstAttribute="trailing" secondItem="Nrj-rR-itJ" secondAttribute="trailing" id="Dtq-O3-seq"/>
-                            <constraint firstItem="Nrj-rR-itJ" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="qFu-Em-cME"/>
                         </constraints>
                     </view>
                     <connections>

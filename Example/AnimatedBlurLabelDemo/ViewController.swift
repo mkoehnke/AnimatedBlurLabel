@@ -15,7 +15,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-
+        blurLabel.animationDuration = 1.0
     }
 
     override func viewDidLayoutSubviews() {
@@ -27,7 +27,7 @@ class ViewController: UIViewController {
         let attributes = [NSParagraphStyleAttributeName : paragraph, NSForegroundColorAttributeName : UIColor.whiteColor()]
         
         let string = NSMutableAttributedString(string: "Title\n\nSubtitle", attributes: attributes)
-        string.addAttribute(NSFontAttributeName, value: UIFont.boldSystemFontOfSize(32.0), range: NSMakeRange(0, 5))
+        string.addAttribute(NSFontAttributeName, value: UIFont.boldSystemFontOfSize(48.0), range: NSMakeRange(0, 5))
         string.addAttribute(NSFontAttributeName, value: UIFont.systemFontOfSize(14.0), range: NSMakeRange(7, 7))
         blurLabel.attributedText = string
     }

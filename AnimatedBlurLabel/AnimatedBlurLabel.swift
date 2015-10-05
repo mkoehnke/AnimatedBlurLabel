@@ -132,6 +132,20 @@ class AnimatedBlurLabel : UILabel {
         }
     }
     
+    private func hasAlignment(alignment: NSTextAlignment) -> Bool {
+        var hasAlignment = false
+        if let text = attributedTextToRender {
+            text.enumerateAttribute(NSParagraphStyleAttributeName, inRange: NSMakeRange(0, text.length), options: [], usingBlock: { value, _ , stop in
+                let paragraphStyle = value as? NSParagraphStyle
+                hasAlignment = paragraphStyle?.alignment == alignment
+                stop.memory = true
+            })
+        } else if let _ = textToRender {
+            hasAlignment = textAlignment == alignment
+        }
+        return hasAlignment
+    }
+    
     private func deferBlur(blurred: Bool, animated: Bool, completion: ((finished : Bool) -> Void)?) {
         print("Defer blurring ...")
         blurredParameter = blurred
@@ -308,10 +322,18 @@ class AnimatedBlurLabel : UILabel {
         CATransaction.setDisableActions(true)
         blurLayer1.frame = bounds
         blurLayer2.frame = bounds
+        
+        if let renderedTextImage = renderedTextImage where hasAlignment(.Center) == false {
+            var newX = (bounds.size.width - renderedTextImage.size.width) / 2
+            newX = hasAlignment(.Right) ? newX : (newX * -1)
+            blurLayer1.frame = CGRectOffset(blurLayer1.frame, newX, 0)
+            blurLayer2.frame = CGRectOffset(blurLayer2.frame, newX, 0)
+        }
+        
         CATransaction.setDisableActions(false)
         CATransaction.commit()
     }
-
+    
     private func applyBlurEffect(image: UIImage, blurLevel: Double) -> UIImage {
         let resultImage : CIImage!
         if blurLevel > 0 {
