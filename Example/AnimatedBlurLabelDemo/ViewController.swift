@@ -16,22 +16,9 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         blurLabel.animationDuration = 1.0
+        blurLabel.setTitle("Title Title Title Title Title", subtitle: "Subtitle", alignment: .Left)
     }
 
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        
-        let paragraph = NSMutableParagraphStyle()
-        paragraph.lineBreakMode = NSLineBreakMode.ByTruncatingTail
-        paragraph.alignment = .Center
-        let attributes = [NSParagraphStyleAttributeName : paragraph, NSForegroundColorAttributeName : UIColor.whiteColor()]
-        
-        let string = NSMutableAttributedString(string: "Title\n\nSubtitle", attributes: attributes)
-        string.addAttribute(NSFontAttributeName, value: UIFont.boldSystemFontOfSize(48.0), range: NSMakeRange(0, 5))
-        string.addAttribute(NSFontAttributeName, value: UIFont.systemFontOfSize(14.0), range: NSMakeRange(7, 7))
-        blurLabel.attributedText = string
-    }
-    
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         blurLabel.setBlurred(true, animated: true) { finished in

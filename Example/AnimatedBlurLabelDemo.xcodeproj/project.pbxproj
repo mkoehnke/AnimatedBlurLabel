@@ -13,6 +13,7 @@
 		BF55093F1BBC70E6004ADB98 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BF55093D1BBC70E6004ADB98 /* Main.storyboard */; };
 		BF5509411BBC70E6004ADB98 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BF5509401BBC70E6004ADB98 /* Assets.xcassets */; };
 		BF5509441BBC70E6004ADB98 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BF5509421BBC70E6004ADB98 /* LaunchScreen.storyboard */; };
+		BF5B7DBA1BCD31F200CE4E57 /* UIKitExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5B7DB91BCD31F200CE4E57 /* UIKitExtensions.swift */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +25,7 @@
 		BF5509401BBC70E6004ADB98 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		BF5509431BBC70E6004ADB98 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		BF5509451BBC70E6004ADB98 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BF5B7DB91BCD31F200CE4E57 /* UIKitExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIKitExtensions.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,6 +69,7 @@
 			children = (
 				BF1B014D1BBEB8AB0027CABD /* AnimatedBlurLabel */,
 				BF5509391BBC70E6004ADB98 /* AppDelegate.swift */,
+				BF5B7DB91BCD31F200CE4E57 /* UIKitExtensions.swift */,
 				BF55093B1BBC70E6004ADB98 /* ViewController.swift */,
 				BF55093D1BBC70E6004ADB98 /* Main.storyboard */,
 				BF5509401BBC70E6004ADB98 /* Assets.xcassets */,
@@ -148,6 +151,7 @@
 			files = (
 				BF55093C1BBC70E6004ADB98 /* ViewController.swift in Sources */,
 				BF1B014F1BBEB8AB0027CABD /* AnimatedBlurLabel.swift in Sources */,
+				BF5B7DBA1BCD31F200CE4E57 /* UIKitExtensions.swift in Sources */,
 				BF55093A1BBC70E6004ADB98 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
