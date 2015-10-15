@@ -25,7 +25,6 @@ class AnimatedBlurLabel : UILabel {
                 if reverse == blurred { blurredImages = blurredImages.reverse() }
                 completionParameter = completion
                 reverse = !blurred
-                progress = 0.0
                 startDisplayLink()
             } else {
                 deferBlur(blurred, animated: animated, completion: completion)
@@ -57,7 +56,6 @@ class AnimatedBlurLabel : UILabel {
     private var attributedTextToRender: NSAttributedString?
     private var textToRender: String?
     
-    private var imageToBlur : CIImage?
     private var context : CIContext = {
         let eaglContext = EAGLContext(API: .OpenGLES2)
         let instance = CIContext(EAGLContext: eaglContext, options: [ kCIContextWorkingColorSpace : NSNull() ])
@@ -167,7 +165,8 @@ class AnimatedBlurLabel : UILabel {
     }()
     
     private func startDisplayLink() {
-        if (progress < animationDuration && displayLink?.paused == true) {
+        if (displayLink?.paused == true) {
+            progress = 0.0
             startTime = CACurrentMediaTime();
             displayLink?.paused = false
         }
@@ -268,10 +267,12 @@ class AnimatedBlurLabel : UILabel {
         
         renderedTextImage = text?.imageFromText(CGSizeMake(maxWidth, maxHeight))
         if let renderedTextImage = renderedTextImage {
-            imageToBlur = CIImage(image: renderedTextImage)
-            blurredTextImage = applyBlurEffect(renderedTextImage, blurLevel: Double(blurRadius))
+            blurredTextImage = applyBlurEffect(CIImage(image: renderedTextImage)!, blurLevel: Double(blurRadius))
         }
+        
+        reverse = false
         setBlurred(false)
+        
         blurredImagesReady = false
         
         invalidateIntrinsicContentSize()
@@ -286,7 +287,8 @@ class AnimatedBlurLabel : UILabel {
             blurredImagesReady = false
             blurredImages = [UIImage]()
             
-            let blurredImage = applyBlurEffect(renderedTextImage, blurLevel: 0)
+            let imageToBlur = CIImage(image: renderedTextImage)!
+            let blurredImage = applyBlurEffect(imageToBlur, blurLevel: 0)
             blurredImages.append(blurredImage)
             blurredImages.append(blurredImage)
             
@@ -294,7 +296,7 @@ class AnimatedBlurLabel : UILabel {
                 if let strongSelf = self {
                     for i in 1...strongSelf.numberOfStages {
                         let radius = Double(i) * Double(strongSelf.blurRadius) / Double(strongSelf.numberOfStages)
-                        let blurredImage = strongSelf.applyBlurEffect(renderedTextImage, blurLevel: Double(radius))
+                        let blurredImage = strongSelf.applyBlurEffect(imageToBlur, blurLevel: Double(radius))
                         strongSelf.blurredImages.append(blurredImage)
                         
                         if i == strongSelf.numberOfStages {
@@ -314,14 +316,12 @@ class AnimatedBlurLabel : UILabel {
         }
     }
     
-    private func applyBlurEffect(image: UIImage, blurLevel: Double) -> UIImage {
-        let resultImage : CIImage!
+    private func applyBlurEffect(image: CIImage, blurLevel: Double) -> UIImage {
+        var resultImage : CIImage = image
         if blurLevel > 0 {
             blurfilter.setValue(blurLevel, forKey: kCIInputRadiusKey)
-            blurfilter.setValue(imageToBlur, forKey: kCIInputImageKey)
+            blurfilter.setValue(image, forKey: kCIInputImageKey)
             resultImage = blurfilter.outputImage!
-        } else {
-            resultImage = CIImage(image: image)
         }
         
         blendFilter.setValue(resultImage, forKey: kCIInputImageKey)
@@ -329,7 +329,7 @@ class AnimatedBlurLabel : UILabel {
         let blendOutput = blendFilter.outputImage!
         
         let cgImage = context.createCGImage(blendOutput, fromRect: resultImage.extent)
-        let result = UIImage(CGImage: cgImage, scale: image.scale, orientation: UIImageOrientation.Up)
+        let result = UIImage(CGImage: cgImage)
         return result
     }
     

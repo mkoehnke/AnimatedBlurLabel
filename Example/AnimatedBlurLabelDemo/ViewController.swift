@@ -16,7 +16,7 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         blurLabel.animationDuration = 1.0
-        blurLabel.setTitle("Title Title Title Title Title", subtitle: "Subtitle", alignment: .Left)
+        blurLabel.setTitle("AnimatedBlurLabel", subtitle: "Subtitle", alignment: .Center)
     }
 
     override func viewDidAppear(animated: Bool) {
