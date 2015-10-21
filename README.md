@@ -1,6 +1,6 @@
 # AnimatedBlurLabel
 
-Subclass of UILabel for animating the blurring and unblurring of text. Take a look at the demo project to see how to use this library.
+Subclass of UILabel for animating the blurring and unblurring of text. Take a look at the demo project to see how to use it.
 
 <img src="https://raw.githubusercontent.com/mkoehnke/AnimatedBlurLabel/master/Resources/AnimatedBlurLabel.gif">
 
