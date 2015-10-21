@@ -16,8 +16,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Demo" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Nrj-rR-itJ" customClass="AnimatedBlurLabel" customModule="AnimatedBlurLabelDemo" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="272" width="600" height="57.5"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Demo" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="215" translatesAutoresizingMaskIntoConstraints="NO" id="Nrj-rR-itJ" customClass="AnimatedBlurLabel" customModule="AnimatedBlurLabelDemo" customModuleProvider="target">
+                                <rect key="frame" x="234" y="227.5" width="133" height="58"/>
                                 <animations/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="48"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -57,12 +57,11 @@
                         <color key="backgroundColor" red="0.20392156862745098" green="0.59607843137254901" blue="0.85882352941176465" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="JfB-a4-XYa" secondAttribute="bottom" id="4Vy-GM-2kg"/>
-                            <constraint firstItem="Nrj-rR-itJ" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="7SO-xA-ZWY"/>
-                            <constraint firstItem="Nrj-rR-itJ" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="Beg-my-Ynp"/>
+                            <constraint firstItem="Nrj-rR-itJ" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" constant="-44" id="Beg-my-Ynp"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="dYF-rg-9aN" secondAttribute="bottom" id="CuA-CM-qTn"/>
                             <constraint firstItem="JfB-a4-XYa" firstAttribute="width" secondItem="dYF-rg-9aN" secondAttribute="width" id="DL2-fJ-tAl"/>
-                            <constraint firstAttribute="trailing" secondItem="Nrj-rR-itJ" secondAttribute="trailing" id="Dtq-O3-seq"/>
                             <constraint firstItem="dYF-rg-9aN" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="Ldj-U0-gpd"/>
+                            <constraint firstItem="Nrj-rR-itJ" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="MN8-02-GPz"/>
                             <constraint firstAttribute="trailing" secondItem="JfB-a4-XYa" secondAttribute="trailing" id="d7Q-it-hXi"/>
                             <constraint firstItem="JfB-a4-XYa" firstAttribute="leading" secondItem="dYF-rg-9aN" secondAttribute="trailing" constant="2" id="dsN-Za-fbA"/>
                         </constraints>

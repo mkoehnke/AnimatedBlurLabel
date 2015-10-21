@@ -1,13 +1,27 @@
 //
-//  AnimatedBlurLabel.swift
-//  AnimatedTextBlurDemo
+// AnimatedBlurLabel.swift
 //
-//  Created by Mathias Köhnke on 30/09/15.
-//  Copyright © 2015 Mathias Köhnke. All rights reserved.
+// Copyright (c) 2015 Mathias Koehnke (http://www.mathiaskoehnke.com)
 //
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
 
 import UIKit
-
 
 class AnimatedBlurLabel : UILabel {
     
@@ -62,7 +76,13 @@ class AnimatedBlurLabel : UILabel {
         return instance
     }()
     
-    private lazy var blurfilter : CIFilter = {
+    private lazy var clampFilter : CIFilter = {
+        let transform = CGAffineTransformIdentity
+        let instance = CIFilter(name: "CIAffineClamp")!
+        instance.setValue(NSValue(CGAffineTransform: transform), forKey: "inputTransform")
+        return instance
+    }()
+    private lazy var blurFilter : CIFilter = {
         return CIFilter(name: "CIGaussianBlur")!
     }()
     private lazy var colorFilter : CIFilter = {
@@ -319,16 +339,20 @@ class AnimatedBlurLabel : UILabel {
     private func applyBlurEffect(image: CIImage, blurLevel: Double) -> UIImage {
         var resultImage : CIImage = image
         if blurLevel > 0 {
-            blurfilter.setValue(blurLevel, forKey: kCIInputRadiusKey)
-            blurfilter.setValue(image, forKey: kCIInputImageKey)
-            resultImage = blurfilter.outputImage!
+            clampFilter.setValue(image, forKey: kCIInputImageKey)
+            let clampResult = clampFilter.outputImage!
+            
+            blurFilter.setValue(blurLevel, forKey: kCIInputRadiusKey)
+            blurFilter.setValue(clampResult, forKey: kCIInputImageKey)
+            resultImage = blurFilter.outputImage!
         }
         
         blendFilter.setValue(resultImage, forKey: kCIInputImageKey)
         blendFilter.setValue(inputBackgroundImage, forKey: kCIInputBackgroundImageKey)
         let blendOutput = blendFilter.outputImage!
         
-        let cgImage = context.createCGImage(blendOutput, fromRect: resultImage.extent)
+        let offset : CGFloat = CGFloat(blurLevel * 2)
+        let cgImage = context.createCGImage(blendOutput, fromRect: CGRectMake(-offset, -offset, image.extent.size.width + (offset*2), image.extent.size.height + (offset*2)))
         let result = UIImage(CGImage: cgImage)
         return result
     }
@@ -397,9 +421,10 @@ private extension NSAttributedString {
     }
     
     private func imageFromText(maxSize: CGSize) -> UIImage {
+        let padding : CGFloat = 5
         let size = sizeOfAttributeString(self, maxSize:maxSize)
-        UIGraphicsBeginImageContextWithOptions(size, false , 0.0)
-        self.drawInRect(CGRectMake(0, 0, size.width, size.height))
+        UIGraphicsBeginImageContextWithOptions(CGSizeMake(size.width + padding*2, size.height + padding*2), false , 0.0)
+        self.drawInRect(CGRectMake(padding, padding, size.width, size.height))
         let image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         return image
