@@ -37,7 +37,6 @@ class ViewController: UIViewController {
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        print("isBlurred: \(blurLabel.isBlurred)")
         setBlurEnabled(!blurLabel.isBlurred)
     }
     

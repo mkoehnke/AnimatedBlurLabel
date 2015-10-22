@@ -25,16 +25,28 @@ import UIKit
 
 class AnimatedBlurLabel : UILabel {
     
+    /// The duration of the blurring/unblurring animation in seconds
     var animationDuration : NSTimeInterval = 10.0
+    
+    /// The maximum blur radius that is applied to the text
     var blurRadius : CGFloat = 30.0
+    
+    /// Returns true if blur has been applied to the text
     var isBlurred : Bool {
         return !CFEqual(blurLayer1.contents, renderedTextImage?.CGImage)
     }
 
+    /**
+    Starts the blurring/unbluring of the text, either with animation or without.
+    
+    - parameter blurred:    Pass 'true' for blurring the text, 'false' false for unblurring.
+    - parameter animated:   Pass 'true' for an animated blurring.
+    - parameter completion: The completion handler that is called when the blurring/unblurring
+                            animation has finished.
+    */
     func setBlurred(blurred: Bool, animated: Bool, completion: ((finished : Bool) -> Void)?) {
         if animated {
             if canRun() {
-                print("Start blurring ...")
                 setBlurred(!blurred)
                 if reverse == blurred { blurredImages = blurredImages.reverse() }
                 completionParameter = completion
@@ -75,6 +87,8 @@ class AnimatedBlurLabel : UILabel {
         let instance = CIContext(EAGLContext: eaglContext, options: [ kCIContextWorkingColorSpace : NSNull() ])
         return instance
     }()
+    
+    // MARK: Filters
     
     private lazy var clampFilter : CIFilter = {
         let transform = CGAffineTransformIdentity
@@ -269,8 +283,6 @@ class AnimatedBlurLabel : UILabel {
     // MARK: Text Rendering
     
     private func resetAttributes() {
-        print("Rerendering Text ...")
-        
         blurredParameter = nil
         animatedParameter = nil
         completionParameter = nil
@@ -304,6 +316,11 @@ class AnimatedBlurLabel : UILabel {
     
     private func prepareImages() {
         if let renderedTextImage = renderedTextImage {
+            if TARGET_IPHONE_SIMULATOR == 1 {
+                print("Note: AnimatedBlurLabel is running on the Simulator. " +
+                      "Software rendering is used. This might take a few seconds ...")
+            }
+            
             blurredImagesReady = false
             blurredImages = [UIImage]()
             
@@ -402,7 +419,6 @@ class AnimatedBlurLabel : UILabel {
     }
     
     private func callCompletion(completion: ((finished: Bool) -> Void)?, finished: Bool) {
-        print("Finished blurring: \(finished)")
         self.blurredParameter = nil
         self.animatedParameter = nil
         if let completion = completion {
