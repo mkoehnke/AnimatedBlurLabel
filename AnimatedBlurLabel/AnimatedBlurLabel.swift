@@ -431,14 +431,13 @@ class AnimatedBlurLabel : UILabel {
 
 
 private extension NSAttributedString {
-    private func sizeOfAttributeString(str: NSAttributedString, maxSize: CGSize) -> CGSize {
-        let size = str.boundingRectWithSize(maxSize, options:(NSStringDrawingOptions.UsesLineFragmentOrigin), context:nil).size
-        return size
+    private func sizeToFit(maxSize: CGSize) -> CGSize {
+        return boundingRectWithSize(maxSize, options:(NSStringDrawingOptions.UsesLineFragmentOrigin), context:nil).size
     }
     
     private func imageFromText(maxSize: CGSize) -> UIImage {
         let padding : CGFloat = 5
-        let size = sizeOfAttributeString(self, maxSize:maxSize)
+        let size = sizeToFit(maxSize)
         UIGraphicsBeginImageContextWithOptions(CGSizeMake(size.width + padding*2, size.height + padding*2), false , 0.0)
         self.drawInRect(CGRectMake(padding, padding, size.width, size.height))
         let image = UIGraphicsGetImageFromCurrentImageContext()
