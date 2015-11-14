@@ -5,7 +5,7 @@ Pod::Spec.new do |s|
   s.summary      = "Subclass of UILabel for animating the blurring and unblurring of text in iOS"
 
   s.description  = <<-DESC
-                   Subclass of UILabel for animating the blurring and unblurring of text in iOS 
+                   Label for animating the blurring and unblurring of text in iOS — written in Swift 
                    DESC
 
   s.homepage     = "https://github.com/mkoehnke/AnimatedBlurLabel"
