@@ -5,7 +5,32 @@ Subclass of UILabel for animating the blurring and unblurring of text. Take a lo
 <img src="https://raw.githubusercontent.com/mkoehnke/AnimatedBlurLabel/master/Resources/AnimatedBlurLabel.gif">
 
 # Installation
-Copy the **AnimatedBlurLabel.swift** file to your Swift project, add it to your target and you're good to go.
+
+## CocoaPods
+[CocoaPods](http://cocoapods.org) is a dependency manager for Cocoa projects. You can install it with the following command:
+
+```bash
+$ gem install cocoapods
+```
+
+To integrate the AnimatedBlurLabel into your Xcode project using CocoaPods, specify it in your `Podfile`:
+
+```ruby
+source 'https://github.com/CocoaPods/Specs.git'
+platform :ios, '9.0'
+use_frameworks!
+
+pod 'AnimatedBlurLabel'
+```
+
+Then, run the following command:
+
+```bash
+$ pod install
+```
+
+## Manually
+Copy the **AnimatedBlurLabel.swift** file to your Swift project, add it to a target and you're good to go.
 
 # Usage
 The easiest way to get started is to add the AnimatedBlurLabel as a custom label in your Storyboard. After that, you can set properties like animation duration or blur radius in code:
