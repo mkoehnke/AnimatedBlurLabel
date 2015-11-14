@@ -1,5 +1,10 @@
 # AnimatedBlurLabel
 
+[![Twitter: @mkoehnke](https://img.shields.io/badge/contact-@mkoehnke-blue.svg?style=flat)](https://twitter.com/mkoehnke)
+[![Version](https://img.shields.io/cocoapods/v/AnimatedBlurLabel.svg?style=flat)](http://cocoadocs.org/docsets/AnimatedBlurLabel)
+[![License](https://img.shields.io/cocoapods/l/AnimatedBlurLabel.svg?style=flat)](http://cocoadocs.org/docsets/AnimatedBlurLabel)
+[![Platform](https://img.shields.io/cocoapods/p/AnimatedBlurLabel.svg?style=flat)](http://cocoadocs.org/docsets/AnimatedBlurLabel)
+
 Subclass of UILabel for animating the blurring and unblurring of text. Take a look at the demo project to see how to use it.
 
 <img src="https://raw.githubusercontent.com/mkoehnke/AnimatedBlurLabel/master/Resources/AnimatedBlurLabel.gif">
