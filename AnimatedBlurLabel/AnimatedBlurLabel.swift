@@ -23,16 +23,17 @@
 
 import UIKit
 
-class AnimatedBlurLabel : UILabel {
+/// The AnimatedBlurLabel class
+public class AnimatedBlurLabel : UILabel {
     
     /// The duration of the blurring/unblurring animation in seconds
-    var animationDuration : NSTimeInterval = 10.0
+    public var animationDuration : NSTimeInterval = 10.0
     
     /// The maximum blur radius that is applied to the text
-    var blurRadius : CGFloat = 30.0
+    public var blurRadius : CGFloat = 30.0
     
     /// Returns true if blur has been applied to the text
-    var isBlurred : Bool {
+    public var isBlurred : Bool {
         return !CFEqual(blurLayer1.contents, renderedTextImage?.CGImage)
     }
 
@@ -44,7 +45,7 @@ class AnimatedBlurLabel : UILabel {
     - parameter completion: The completion handler that is called when the blurring/unblurring
                             animation has finished.
     */
-    func setBlurred(blurred: Bool, animated: Bool, completion: ((finished : Bool) -> Void)?) {
+    public func setBlurred(blurred: Bool, animated: Bool, completion: ((finished : Bool) -> Void)?) {
         if animated {
             if canRun() {
                 setBlurred(!blurred)
@@ -120,13 +121,13 @@ class AnimatedBlurLabel : UILabel {
     
     // MARK: Label Attributes
     
-    override var textColor: UIColor! {
+    override public var textColor: UIColor! {
         didSet {
             resetAttributes()
         }
     }
     
-    override var attributedText: NSAttributedString? {
+    override public var attributedText: NSAttributedString? {
         set(newValue) {
             attributedTextToRender = newValue
             textToRender = nil
@@ -137,7 +138,7 @@ class AnimatedBlurLabel : UILabel {
         }
     }
     
-    override var text: String? {
+    override public var text: String? {
         set(newValue) {
             textToRender = newValue
             attributedTextToRender = nil
@@ -148,19 +149,19 @@ class AnimatedBlurLabel : UILabel {
         }
     }
     
-    override var textAlignment : NSTextAlignment {
+    override public var textAlignment : NSTextAlignment {
         didSet {
             resetAttributes()
         }
     }
     
-    override var font : UIFont! {
+    override public var font : UIFont! {
         didSet {
             resetAttributes()
         }
     }
     
-    override var lineBreakMode : NSLineBreakMode {
+    override public var lineBreakMode : NSLineBreakMode {
         didSet {
             resetAttributes()
         }
@@ -169,7 +170,7 @@ class AnimatedBlurLabel : UILabel {
 
     // MARK: Setup
     
-    override func awakeFromNib() {
+    override public func awakeFromNib() {
         super.awakeFromNib()
         
         layer.addSublayer(blurLayer1)
@@ -248,14 +249,14 @@ class AnimatedBlurLabel : UILabel {
     
     // MARK: Layout
     
-    override func intrinsicContentSize() -> CGSize {
+    override public func intrinsicContentSize() -> CGSize {
         if let renderedTextImage = renderedTextImage {
             return renderedTextImage.size
         }
         return CGSizeZero
     }
     
-    override func layoutSubviews() {
+    override public func layoutSubviews() {
         super.layoutSubviews()
         
         if CGRectEqualToRect(bounds, blurLayer1.bounds) == false {
