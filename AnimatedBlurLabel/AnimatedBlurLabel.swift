@@ -193,7 +193,7 @@ public class AnimatedBlurLabel : UILabel {
     // MARK: Animation
     
     private lazy var displayLink : CADisplayLink? = {
-        var instance = CADisplayLink(target: self, selector: Selector("animateProgress:"))
+        var instance = CADisplayLink(target: self, selector: #selector(AnimatedBlurLabel.animateProgress(_:)))
         instance.paused = true
         instance.addToRunLoop(NSRunLoop.mainRunLoop(), forMode: NSRunLoopCommonModes)
         return instance
