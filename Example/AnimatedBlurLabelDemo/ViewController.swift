@@ -32,7 +32,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         blurLabel.animationDuration = 1.0
-        blurLabel.setTitle("Animated\nBlurLabel", subtitle: "Demo", alignment: .Left)
+        blurLabel.setTitle("Animated\nBlurLabel", subtitle: "Demo", alignment: .left)
     }
     
     override func viewDidLayoutSubviews() {
@@ -40,7 +40,7 @@ class ViewController: UIViewController {
         setBlurEnabled(!blurLabel.isBlurred)
     }
     
-    @IBAction func blurButtonTouched(sender: AnyObject) {
+    @IBAction func blurButtonTouched(_ sender: AnyObject) {
         setButtonEnabled(blurButton, enabled: false)
         setButtonEnabled(unblurButton, enabled: false)
         blurLabel.setBlurred(true, animated: true) { [weak self] finished in
@@ -48,7 +48,7 @@ class ViewController: UIViewController {
         }
     }
     
-    @IBAction func unblurButtonTouched(sender: AnyObject) {
+    @IBAction func unblurButtonTouched(_ sender: AnyObject) {
         setButtonEnabled(blurButton, enabled: false)
         setButtonEnabled(unblurButton, enabled: false)
         blurLabel.setBlurred(false, animated: true) { [weak self] finished in
@@ -57,17 +57,17 @@ class ViewController: UIViewController {
         
     }
     
-    func setBlurEnabled(enabled: Bool) {
+    func setBlurEnabled(_ enabled: Bool) {
         setButtonEnabled(blurButton, enabled: enabled)
         setButtonEnabled(unblurButton, enabled: !enabled)
     }
     
-    func setButtonEnabled(button: UIButton, enabled: Bool) {
-        button.enabled = enabled
+    func setButtonEnabled(_ button: UIButton, enabled: Bool) {
+        button.isEnabled = enabled
         button.alpha = (enabled) ? 1.0 : 0.5
     }
     
-    override func prefersStatusBarHidden() -> Bool {
+    override var prefersStatusBarHidden : Bool {
         return true
     }
 }

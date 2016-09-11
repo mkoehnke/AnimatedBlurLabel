@@ -24,17 +24,17 @@
 import UIKit
 
 /// The AnimatedBlurLabel class
-public class AnimatedBlurLabel : UILabel {
+open class AnimatedBlurLabel : UILabel {
     
     /// The duration of the blurring/unblurring animation in seconds
-    public var animationDuration : NSTimeInterval = 10.0
+    open var animationDuration : TimeInterval = 10.0
     
     /// The maximum blur radius that is applied to the text
-    public var blurRadius : CGFloat = 30.0
+    open var blurRadius : CGFloat = 30.0
     
     /// Returns true if blur has been applied to the text
-    public var isBlurred : Bool {
-        return !CFEqual(blurLayer1.contents, renderedTextImage?.CGImage)
+    open var isBlurred : Bool {
+        return !CFEqual(blurLayer1.contents as CFTypeRef!, renderedTextImage?.cgImage)
     }
 
     /**
@@ -45,11 +45,11 @@ public class AnimatedBlurLabel : UILabel {
     - parameter completion: The completion handler that is called when the blurring/unblurring
                             animation has finished.
     */
-    public func setBlurred(blurred: Bool, animated: Bool, completion: ((finished : Bool) -> Void)?) {
+    open func setBlurred(_ blurred: Bool, animated: Bool, completion: ((_ finished : Bool) -> Void)?) {
         if animated {
             if canRun() {
                 setBlurred(!blurred)
-                if reverse == blurred { blurredImages = blurredImages.reverse() }
+                if reverse == blurred { blurredImages = blurredImages.reversed() }
                 completionParameter = completion
                 reverse = !blurred
                 startDisplayLink()
@@ -67,67 +67,67 @@ public class AnimatedBlurLabel : UILabel {
     // MARK: Private
     //
     
-    private lazy var blurLayer1 : CALayer = self.setupBlurLayer()
-    private lazy var blurLayer2 : CALayer = self.setupBlurLayer()
-    private var blurredImages = [UIImage]()
-    private var blurredImagesReady : Bool = false
-    private let numberOfStages = 10
-    private var reverse : Bool = false
+    fileprivate lazy var blurLayer1 : CALayer = self.setupBlurLayer()
+    fileprivate lazy var blurLayer2 : CALayer = self.setupBlurLayer()
+    fileprivate var blurredImages = [UIImage]()
+    fileprivate var blurredImagesReady : Bool = false
+    fileprivate let numberOfStages = 10
+    fileprivate var reverse : Bool = false
     
-    private var blurredParameter : Bool?
-    private var animatedParameter : Bool?
-    private var completionParameter : ((finished: Bool) -> Void)?
+    fileprivate var blurredParameter : Bool?
+    fileprivate var animatedParameter : Bool?
+    fileprivate var completionParameter : ((_ finished: Bool) -> Void)?
     
-    private var renderedTextImage : UIImage?
-    private var blurredTextImage : UIImage?
-    private var attributedTextToRender: NSAttributedString?
-    private var textToRender: String?
+    fileprivate var renderedTextImage : UIImage?
+    fileprivate var blurredTextImage : UIImage?
+    fileprivate var attributedTextToRender: NSAttributedString?
+    fileprivate var textToRender: String?
     
-    private var context : CIContext = {
-        let eaglContext = EAGLContext(API: .OpenGLES2)
-        let instance = CIContext(EAGLContext: eaglContext, options: [ kCIContextWorkingColorSpace : NSNull() ])
+    fileprivate var context : CIContext = {
+        let eaglContext = EAGLContext(api: .openGLES2)
+        let instance = CIContext(eaglContext: eaglContext!, options: [ kCIContextWorkingColorSpace : NSNull() ])
         return instance
     }()
     
     // MARK: Filters
     
-    private lazy var clampFilter : CIFilter = {
-        let transform = CGAffineTransformIdentity
+    fileprivate lazy var clampFilter : CIFilter = {
+        let transform = CGAffineTransform.identity
         let instance = CIFilter(name: "CIAffineClamp")!
-        instance.setValue(NSValue(CGAffineTransform: transform), forKey: "inputTransform")
+        instance.setValue(NSValue(cgAffineTransform: transform), forKey: "inputTransform")
         return instance
     }()
-    private lazy var blurFilter : CIFilter = {
+    fileprivate lazy var blurFilter : CIFilter = {
         return CIFilter(name: "CIGaussianBlur")!
     }()
-    private lazy var colorFilter : CIFilter = {
+    fileprivate lazy var colorFilter : CIFilter = {
         let instance = CIFilter(name: "CIConstantColorGenerator")!
         instance.setValue(self.blendColor, forKey: kCIInputColorKey)
         return instance
     }()
-    private lazy var blendFilter : CIFilter = {
+    fileprivate lazy var blendFilter : CIFilter = {
         return CIFilter(name: "CISourceAtopCompositing")!
     }()
-    private lazy var blendColor : CIColor = {
-        return CIColor(color: self.backgroundColor ?? self.superview?.backgroundColor ?? .whiteColor())
+    fileprivate lazy var blendColor : CIColor = {
+        return CIColor(color: self.backgroundColor ?? self.superview?.backgroundColor ?? .white)
     }()
-    private lazy var inputBackgroundImage : CIImage = {
+    fileprivate lazy var inputBackgroundImage : CIImage = {
         return self.colorFilter.outputImage!
     }()
     
-    private var startTime : CFTimeInterval?
-    private var progress : NSTimeInterval = 0.0
+    fileprivate var startTime : CFTimeInterval?
+    fileprivate var progress : TimeInterval = 0.0
     
     
     // MARK: Label Attributes
     
-    override public var textColor: UIColor! {
+    override open var textColor: UIColor! {
         didSet {
             resetAttributes()
         }
     }
     
-    override public var attributedText: NSAttributedString? {
+    override open var attributedText: NSAttributedString? {
         set(newValue) {
             attributedTextToRender = newValue
             textToRender = nil
@@ -138,7 +138,7 @@ public class AnimatedBlurLabel : UILabel {
         }
     }
     
-    override public var text: String? {
+    override open var text: String? {
         set(newValue) {
             textToRender = newValue
             attributedTextToRender = nil
@@ -149,19 +149,19 @@ public class AnimatedBlurLabel : UILabel {
         }
     }
     
-    override public var textAlignment : NSTextAlignment {
+    override open var textAlignment : NSTextAlignment {
         didSet {
             resetAttributes()
         }
     }
     
-    override public var font : UIFont! {
+    override open var font : UIFont! {
         didSet {
             resetAttributes()
         }
     }
     
-    override public var lineBreakMode : NSLineBreakMode {
+    override open var lineBreakMode : NSLineBreakMode {
         didSet {
             resetAttributes()
         }
@@ -170,48 +170,48 @@ public class AnimatedBlurLabel : UILabel {
 
     // MARK: Setup
     
-    override public func awakeFromNib() {
+    override open func awakeFromNib() {
         super.awakeFromNib()
         
         layer.addSublayer(blurLayer1)
         layer.addSublayer(blurLayer2)
         
         super.text = nil
-        super.textAlignment = .Center
+        super.textAlignment = .center
     }
 
     
-    private func setupBlurLayer() -> CALayer {
+    fileprivate func setupBlurLayer() -> CALayer {
         let layer = CALayer()
         layer.contentsGravity = kCAGravityCenter
         layer.bounds = bounds
         layer.position = center
-        layer.contentsScale = UIScreen.mainScreen().scale
+        layer.contentsScale = UIScreen.main.scale
         return layer
     }
     
     // MARK: Animation
     
-    private lazy var displayLink : CADisplayLink? = {
+    fileprivate lazy var displayLink : CADisplayLink? = {
         var instance = CADisplayLink(target: self, selector: #selector(AnimatedBlurLabel.animateProgress(_:)))
-        instance.paused = true
-        instance.addToRunLoop(NSRunLoop.mainRunLoop(), forMode: NSRunLoopCommonModes)
+        instance.isPaused = true
+        instance.add(to: RunLoop.main, forMode: RunLoopMode.commonModes)
         return instance
     }()
     
-    private func startDisplayLink() {
-        if (displayLink?.paused == true) {
+    fileprivate func startDisplayLink() {
+        if (displayLink?.isPaused == true) {
             progress = 0.0
             startTime = CACurrentMediaTime();
-            displayLink?.paused = false
+            displayLink?.isPaused = false
         }
     }
     
-    private func stopDisplayLink() {
-        displayLink?.paused = true
+    fileprivate func stopDisplayLink() {
+        displayLink?.isPaused = true
     }
     
-    @objc private func animateProgress(displayLink : CADisplayLink) {
+    @objc fileprivate func animateProgress(_ displayLink : CADisplayLink) {
         if (progress > animationDuration) {
             stopDisplayLink()
             setBlurred(!reverse)
@@ -226,7 +226,7 @@ public class AnimatedBlurLabel : UILabel {
         }
     }
     
-    private func updateAppearance(elapsedTime : CFTimeInterval?) {
+    fileprivate func updateAppearance(_ elapsedTime : CFTimeInterval?) {
         progress += elapsedTime!
         
         let r = Double(progress / animationDuration)
@@ -235,31 +235,31 @@ public class AnimatedBlurLabel : UILabel {
         let blurRemainder = blur - Double(blurIndex)
         
         CATransaction.setDisableActions(true)
-        blurLayer1.contents = blurredImages[blurIndex + 1].CGImage
-        blurLayer2.contents = blurredImages[blurIndex + 2].CGImage
+        blurLayer1.contents = blurredImages[blurIndex + 1].cgImage
+        blurLayer2.contents = blurredImages[blurIndex + 2].cgImage
         blurLayer2.opacity = Float(blurRemainder)
         CATransaction.setDisableActions(false)
     }
     
     deinit {
-        displayLink!.removeFromRunLoop(NSRunLoop.mainRunLoop(), forMode: NSRunLoopCommonModes)
+        displayLink!.remove(from: RunLoop.main, forMode: RunLoopMode.commonModes)
         displayLink = nil
     }
     
     
     // MARK: Layout
     
-    override public func intrinsicContentSize() -> CGSize {
+    override open var intrinsicContentSize : CGSize {
         if let renderedTextImage = renderedTextImage {
             return renderedTextImage.size
         }
-        return CGSizeZero
+        return CGSize.zero
     }
     
-    override public func layoutSubviews() {
+    override open func layoutSubviews() {
         super.layoutSubviews()
         
-        if CGRectEqualToRect(bounds, blurLayer1.bounds) == false {
+        if bounds.equalTo(blurLayer1.bounds) == false {
             resetAttributes()
             
             CATransaction.begin()
@@ -268,11 +268,11 @@ public class AnimatedBlurLabel : UILabel {
             blurLayer2.frame = bounds
             
             // Text Alignment
-            if let renderedTextImage = renderedTextImage where hasAlignment(.Center) == false {
+            if let renderedTextImage = renderedTextImage , hasAlignment(.center) == false {
                 var newX = (bounds.size.width - renderedTextImage.size.width) / 2
-                newX = hasAlignment(.Right) ? newX : (newX * -1)
-                blurLayer1.frame = CGRectOffset(blurLayer1.frame, newX, 0)
-                blurLayer2.frame = CGRectOffset(blurLayer2.frame, newX, 0)
+                newX = hasAlignment(.right) ? newX : (newX * -1)
+                blurLayer1.frame = blurLayer1.frame.offsetBy(dx: newX, dy: 0)
+                blurLayer2.frame = blurLayer2.frame.offsetBy(dx: newX, dy: 0)
             }
             
             CATransaction.setDisableActions(false)
@@ -283,7 +283,7 @@ public class AnimatedBlurLabel : UILabel {
     
     // MARK: Text Rendering
     
-    private func resetAttributes() {
+    fileprivate func resetAttributes() {
         blurredParameter = nil
         animatedParameter = nil
         completionParameter = nil
@@ -296,9 +296,9 @@ public class AnimatedBlurLabel : UILabel {
         }
         
         let maxWidth = preferredMaxLayoutWidth > 0 ? preferredMaxLayoutWidth : bounds.size.width
-        let maxHeight = preferredMaxLayoutWidth > 0 ? UIScreen.mainScreen().bounds.size.height : bounds.size.height
+        let maxHeight = preferredMaxLayoutWidth > 0 ? UIScreen.main.bounds.size.height : bounds.size.height
         
-        renderedTextImage = text?.imageFromText(CGSizeMake(maxWidth, maxHeight))
+        renderedTextImage = text?.imageFromText(CGSize(width: maxWidth, height: maxHeight))
         if let renderedTextImage = renderedTextImage {
             blurredTextImage = applyBlurEffect(CIImage(image: renderedTextImage)!, blurLevel: Double(blurRadius))
         }
@@ -315,7 +315,7 @@ public class AnimatedBlurLabel : UILabel {
     
     // MARK: Blurring
     
-    private func prepareImages() {
+    fileprivate func prepareImages() {
         if let renderedTextImage = renderedTextImage {
             if TARGET_IPHONE_SIMULATOR == 1 {
                 print("Note: AnimatedBlurLabel is running on the Simulator. " +
@@ -330,7 +330,7 @@ public class AnimatedBlurLabel : UILabel {
             blurredImages.append(blurredImage)
             blurredImages.append(blurredImage)
             
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) { [weak self] in
+            DispatchQueue.global().async { [weak self] in
                 if let strongSelf = self {
                     for i in 1...strongSelf.numberOfStages {
                         let radius = Double(i) * Double(strongSelf.blurRadius) / Double(strongSelf.numberOfStages)
@@ -344,8 +344,8 @@ public class AnimatedBlurLabel : UILabel {
                     strongSelf.blurredImagesReady = true
                     
                     if let blurredParameter = strongSelf.blurredParameter,
-                        animatedParameter = strongSelf.animatedParameter {
-                            dispatch_async(dispatch_get_main_queue(), { [weak self] in
+                        let animatedParameter = strongSelf.animatedParameter {
+                            DispatchQueue.main.async(execute: { [weak self] in
                                 self?.setBlurred(blurredParameter, animated: animatedParameter, completion: self?.completionParameter)
                             })
                     }
@@ -354,7 +354,7 @@ public class AnimatedBlurLabel : UILabel {
         }
     }
     
-    private func applyBlurEffect(image: CIImage, blurLevel: Double) -> UIImage {
+    fileprivate func applyBlurEffect(_ image: CIImage, blurLevel: Double) -> UIImage {
         var resultImage : CIImage = image
         if blurLevel > 0 {
             clampFilter.setValue(image, forKey: kCIInputImageKey)
@@ -370,27 +370,27 @@ public class AnimatedBlurLabel : UILabel {
         let blendOutput = blendFilter.outputImage!
         
         let offset : CGFloat = CGFloat(blurLevel * 2)
-        let cgImage = context.createCGImage(blendOutput, fromRect: CGRectMake(-offset, -offset, image.extent.size.width + (offset*2), image.extent.size.height + (offset*2)))
-        let result = UIImage(CGImage: cgImage)
+        let cgImage = context.createCGImage(blendOutput, from: CGRect(x: -offset, y: -offset, width: image.extent.size.width + (offset*2), height: image.extent.size.height + (offset*2)))
+        let result = UIImage(cgImage: cgImage!)
         return result
     }
     
     // MARK: Helper Methods
     
-    private func defaultAttributes() -> [String : AnyObject]? {
+    fileprivate func defaultAttributes() -> [String : AnyObject]? {
         let paragraph = NSMutableParagraphStyle()
         paragraph.lineBreakMode = lineBreakMode
         paragraph.alignment = textAlignment
-        return [NSParagraphStyleAttributeName : paragraph, NSFontAttributeName : font, NSForegroundColorAttributeName : textColor, NSLigatureAttributeName : NSNumber(integer: 0), NSKernAttributeName : NSNumber(float: 0.0)]
+        return [NSParagraphStyleAttributeName : paragraph, NSFontAttributeName : font, NSForegroundColorAttributeName : textColor, NSLigatureAttributeName : NSNumber(value: 0 as Int), NSKernAttributeName : NSNumber(value: 0.0 as Float)]
     }
     
-    private func hasAlignment(alignment: NSTextAlignment) -> Bool {
+    fileprivate func hasAlignment(_ alignment: NSTextAlignment) -> Bool {
         var hasAlignment = false
         if let text = attributedTextToRender {
-            text.enumerateAttribute(NSParagraphStyleAttributeName, inRange: NSMakeRange(0, text.length), options: [], usingBlock: { value, _ , stop in
+            text.enumerateAttribute(NSParagraphStyleAttributeName, in: NSMakeRange(0, text.length), options: [], using: { value, _ , stop in
                 let paragraphStyle = value as? NSParagraphStyle
                 hasAlignment = paragraphStyle?.alignment == alignment
-                stop.memory = true
+                stop.pointee = true
             })
         } else if let _ = textToRender {
             hasAlignment = textAlignment == alignment
@@ -398,33 +398,33 @@ public class AnimatedBlurLabel : UILabel {
         return hasAlignment
     }
     
-    private func deferBlur(blurred: Bool, animated: Bool, completion: ((finished : Bool) -> Void)?) {
+    fileprivate func deferBlur(_ blurred: Bool, animated: Bool, completion: ((_ finished : Bool) -> Void)?) {
         print("Defer blurring ...")
         blurredParameter = blurred
         animatedParameter = animated
         completionParameter = completion
     }
     
-    private func canRun() -> Bool {
+    fileprivate func canRun() -> Bool {
         return blurredImagesReady && (completionParameter == nil || (completionParameter != nil && animatedParameter != nil && blurredParameter != nil))
     }
     
-    private func setBlurred(blurred: Bool) {
+    fileprivate func setBlurred(_ blurred: Bool) {
         if blurred {
-            blurLayer1.contents = blurredTextImage?.CGImage
-            blurLayer2.contents = blurredTextImage?.CGImage
+            blurLayer1.contents = blurredTextImage?.cgImage
+            blurLayer2.contents = blurredTextImage?.cgImage
         } else {
-            blurLayer1.contents = renderedTextImage?.CGImage
-            blurLayer2.contents = renderedTextImage?.CGImage
+            blurLayer1.contents = renderedTextImage?.cgImage
+            blurLayer2.contents = renderedTextImage?.cgImage
         }
     }
     
-    private func callCompletion(completion: ((finished: Bool) -> Void)?, finished: Bool) {
+    fileprivate func callCompletion(_ completion: ((_ finished: Bool) -> Void)?, finished: Bool) {
         self.blurredParameter = nil
         self.animatedParameter = nil
         if let completion = completion {
             self.completionParameter = nil
-            completion(finished: finished)
+            completion(finished)
         }
     }
 }
@@ -432,17 +432,17 @@ public class AnimatedBlurLabel : UILabel {
 
 
 private extension NSAttributedString {
-    private func sizeToFit(maxSize: CGSize) -> CGSize {
-        return boundingRectWithSize(maxSize, options:(NSStringDrawingOptions.UsesLineFragmentOrigin), context:nil).size
+    func sizeToFit(_ maxSize: CGSize) -> CGSize {
+        return boundingRect(with: maxSize, options:(NSStringDrawingOptions.usesLineFragmentOrigin), context:nil).size
     }
     
-    private func imageFromText(maxSize: CGSize) -> UIImage {
+    func imageFromText(_ maxSize: CGSize) -> UIImage {
         let padding : CGFloat = 5
         let size = sizeToFit(maxSize)
-        UIGraphicsBeginImageContextWithOptions(CGSizeMake(size.width + padding*2, size.height + padding*2), false , 0.0)
-        self.drawInRect(CGRectMake(padding, padding, size.width, size.height))
+        UIGraphicsBeginImageContextWithOptions(CGSize(width: size.width + padding*2, height: size.height + padding*2), false , 0.0)
+        self.draw(in: CGRect(x: padding, y: padding, width: size.width, height: size.height))
         let image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
-        return image
+        return image!
     }
 }
