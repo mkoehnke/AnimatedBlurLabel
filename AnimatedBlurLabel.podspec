@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "AnimatedBlurLabel"
-  s.version      = "1.0.1"
+  s.version      = "1.5.0"
   s.summary      = "Subclass of UILabel for animating the blurring and unblurring of text in iOS"
 
   s.description  = <<-DESC

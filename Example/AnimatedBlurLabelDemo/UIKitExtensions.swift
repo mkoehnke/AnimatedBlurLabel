@@ -25,17 +25,17 @@ import UIKit
 
 extension UILabel {
     
-    func setTitle(title: String?, subtitle: String?, alignment: NSTextAlignment = .Center) {
-        if let title = title, subtitle = subtitle {
+    func setTitle(_ title: String?, subtitle: String?, alignment: NSTextAlignment = .center) {
+        if let title = title, let subtitle = subtitle {
             let paragraph = NSMutableParagraphStyle()
-            paragraph.lineBreakMode = NSLineBreakMode.ByWordWrapping
+            paragraph.lineBreakMode = NSLineBreakMode.byWordWrapping
             paragraph.alignment = alignment
             paragraph.lineSpacing = 1.6;
             paragraph.lineHeightMultiple = 0.95;
-            let attributes = [NSParagraphStyleAttributeName : paragraph, NSForegroundColorAttributeName : textColor, NSFontAttributeName : UIFont.systemFontOfSize(33.0, weight: UIFontWeightThin)];
+            let attributes = [NSParagraphStyleAttributeName : paragraph, NSForegroundColorAttributeName : textColor, NSFontAttributeName : UIFont.systemFont(ofSize: 33.0, weight: UIFontWeightThin)];
             
             let string = NSMutableAttributedString(string: "\(title)\n\(subtitle)", attributes: attributes)
-            string.addAttribute(NSFontAttributeName, value: UIFont.systemFontOfSize(42.0, weight: UIFontWeightBold), range: NSMakeRange(0, title.characters.count))
+            string.addAttribute(NSFontAttributeName, value: UIFont.systemFont(ofSize: 42.0, weight: UIFontWeightBold), range: NSMakeRange(0, title.characters.count))
             
             attributedText = string
         }
