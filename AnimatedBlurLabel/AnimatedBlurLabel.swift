@@ -377,17 +377,17 @@ open class AnimatedBlurLabel : UILabel {
     
     // MARK: Helper Methods
     
-    fileprivate func defaultAttributes() -> [String : AnyObject]? {
+    fileprivate func defaultAttributes() -> [NSAttributedStringKey : Any]? {
         let paragraph = NSMutableParagraphStyle()
         paragraph.lineBreakMode = lineBreakMode
         paragraph.alignment = textAlignment
-        return [NSParagraphStyleAttributeName : paragraph, NSFontAttributeName : font, NSForegroundColorAttributeName : textColor, NSLigatureAttributeName : NSNumber(value: 0 as Int), NSKernAttributeName : NSNumber(value: 0.0 as Float)]
+        return [.paragraphStyle : paragraph, .font : font, .foregroundColor : textColor, .ligature : NSNumber(value: 0 as Int), .kern : NSNumber(value: 0.0 as Float)]
     }
     
     fileprivate func hasAlignment(_ alignment: NSTextAlignment) -> Bool {
         var hasAlignment = false
         if let text = attributedTextToRender {
-            text.enumerateAttribute(NSParagraphStyleAttributeName, in: NSMakeRange(0, text.length), options: [], using: { value, _ , stop in
+            text.enumerateAttribute(.paragraphStyle, in: NSMakeRange(0, text.length), options: [], using: { value, _ , stop in
                 let paragraphStyle = value as? NSParagraphStyle
                 hasAlignment = paragraphStyle?.alignment == alignment
                 stop.pointee = true
