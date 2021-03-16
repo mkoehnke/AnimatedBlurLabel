@@ -84,8 +84,8 @@ open class AnimatedBlurLabel : UILabel {
     fileprivate var textToRender: String?
     
     fileprivate var context : CIContext = {
-        let eaglContext = EAGLContext(api: .openGLES2)
-        let instance = CIContext(eaglContext: eaglContext!, options: [ CIContextOption.workingColorSpace : NSNull() ])
+        let mtlDevice = MTLCreateSystemDefaultDevice()
+        let instance = CIContext(mtlDevice: mtlDevice!, options: [ CIContextOption.workingColorSpace : NSNull() ])
         return instance
     }()
     
