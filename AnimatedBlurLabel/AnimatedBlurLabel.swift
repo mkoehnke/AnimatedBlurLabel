@@ -172,7 +172,20 @@ open class AnimatedBlurLabel : UILabel {
     
     override open func awakeFromNib() {
         super.awakeFromNib()
-        
+        setup()
+    }
+    
+    public required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        setup()
+    }
+    
+    public override init(frame: CGRect) {
+        super.init(frame: frame)
+        setup()
+    }
+    
+    private func setup() {
         layer.addSublayer(blurLayer1)
         layer.addSublayer(blurLayer2)
         
