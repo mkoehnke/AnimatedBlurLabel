@@ -34,7 +34,7 @@ open class AnimatedBlurLabel : UILabel {
     
     /// Returns true if blur has been applied to the text
     open var isBlurred : Bool {
-        return !CFEqual(blurLayer1.contents as CFTypeRef!, renderedTextImage?.cgImage)
+        return !CFEqual(blurLayer1.contents as CFTypeRef, renderedTextImage?.cgImage)
     }
 
     /**
@@ -85,7 +85,7 @@ open class AnimatedBlurLabel : UILabel {
     
     fileprivate var context : CIContext = {
         let eaglContext = EAGLContext(api: .openGLES2)
-        let instance = CIContext(eaglContext: eaglContext!, options: [ kCIContextWorkingColorSpace : NSNull() ])
+        let instance = CIContext(eaglContext: eaglContext!, options: [ CIContextOption.workingColorSpace : NSNull() ])
         return instance
     }()
     
@@ -183,7 +183,7 @@ open class AnimatedBlurLabel : UILabel {
     
     fileprivate func setupBlurLayer() -> CALayer {
         let layer = CALayer()
-        layer.contentsGravity = kCAGravityCenter
+        layer.contentsGravity = CALayerContentsGravity.center
         layer.bounds = bounds
         layer.position = center
         layer.contentsScale = UIScreen.main.scale
@@ -195,7 +195,7 @@ open class AnimatedBlurLabel : UILabel {
     fileprivate lazy var displayLink : CADisplayLink? = {
         var instance = CADisplayLink(target: self, selector: #selector(AnimatedBlurLabel.animateProgress(_:)))
         instance.isPaused = true
-        instance.add(to: RunLoop.main, forMode: RunLoopMode.commonModes)
+        instance.add(to: RunLoop.main, forMode: RunLoop.Mode.common)
         return instance
     }()
     
@@ -242,7 +242,7 @@ open class AnimatedBlurLabel : UILabel {
     }
     
     deinit {
-        displayLink!.remove(from: RunLoop.main, forMode: RunLoopMode.commonModes)
+        displayLink!.remove(from: RunLoop.main, forMode: RunLoop.Mode.common)
         displayLink = nil
     }
     
@@ -377,17 +377,17 @@ open class AnimatedBlurLabel : UILabel {
     
     // MARK: Helper Methods
     
-    fileprivate func defaultAttributes() -> [String : AnyObject]? {
+    fileprivate func defaultAttributes() -> [NSAttributedString.Key : AnyObject]? {
         let paragraph = NSMutableParagraphStyle()
         paragraph.lineBreakMode = lineBreakMode
         paragraph.alignment = textAlignment
-        return [NSParagraphStyleAttributeName : paragraph, NSFontAttributeName : font, NSForegroundColorAttributeName : textColor, NSLigatureAttributeName : NSNumber(value: 0 as Int), NSKernAttributeName : NSNumber(value: 0.0 as Float)]
+        return [NSAttributedString.Key.paragraphStyle : paragraph, NSAttributedString.Key.font : font, NSAttributedString.Key.foregroundColor : textColor, NSAttributedString.Key.ligature : NSNumber(value: 0 as Int), NSAttributedString.Key.kern : NSNumber(value: 0.0 as Float)]
     }
     
     fileprivate func hasAlignment(_ alignment: NSTextAlignment) -> Bool {
         var hasAlignment = false
         if let text = attributedTextToRender {
-            text.enumerateAttribute(NSParagraphStyleAttributeName, in: NSMakeRange(0, text.length), options: [], using: { value, _ , stop in
+            text.enumerateAttribute(NSAttributedString.Key.paragraphStyle, in: NSMakeRange(0, text.length), options: [], using: { value, _ , stop in
                 let paragraphStyle = value as? NSParagraphStyle
                 hasAlignment = paragraphStyle?.alignment == alignment
                 stop.pointee = true
