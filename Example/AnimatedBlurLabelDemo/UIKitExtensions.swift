@@ -32,10 +32,10 @@ extension UILabel {
             paragraph.alignment = alignment
             paragraph.lineSpacing = 1.6;
             paragraph.lineHeightMultiple = 0.95;
-            let attributes = [NSParagraphStyleAttributeName : paragraph, NSForegroundColorAttributeName : textColor, NSFontAttributeName : UIFont.systemFont(ofSize: 33.0, weight: UIFontWeightThin)];
+            let attributes = [NSAttributedString.Key.paragraphStyle : paragraph, NSAttributedString.Key.foregroundColor : textColor, NSAttributedString.Key.font : UIFont.systemFont(ofSize: 33.0, weight: UIFont.Weight.thin)];
             
-            let string = NSMutableAttributedString(string: "\(title)\n\(subtitle)", attributes: attributes)
-            string.addAttribute(NSFontAttributeName, value: UIFont.systemFont(ofSize: 42.0, weight: UIFontWeightBold), range: NSMakeRange(0, title.characters.count))
+            let string = NSMutableAttributedString(string: "\(title)\n\(subtitle)", attributes: attributes as [NSAttributedString.Key : Any])
+            string.addAttribute(NSAttributedString.Key.font, value: UIFont.systemFont(ofSize: 42.0, weight: UIFont.Weight.bold), range: NSMakeRange(0, title.count))
             
             attributedText = string
         }
